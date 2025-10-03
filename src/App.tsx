@@ -8,6 +8,7 @@ import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import Projects from "./pages/Projects";
 import ProjectDetails from "./pages/ProjectDetails";
+import VideoPreview from "./pages/VideoPreview";
 import Profile from "./pages/Profile";
 import Chat from "./pages/Chat";
 import Admin from "./pages/Admin";
@@ -31,6 +32,7 @@ const App = () => (
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/projects" element={<Projects />} />
           <Route path="/projects/:projectId" element={<ProjectDetails />} />
+          <Route path="/video-preview/:versionId" element={<VideoPreview />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/chat" element={<Chat />} />
           <Route path="/admin" element={<Admin />} />

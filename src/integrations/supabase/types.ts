@@ -413,9 +413,50 @@ export type Database = {
         }
         Relationships: []
       }
+      video_feedback: {
+        Row: {
+          comment_text: string
+          created_at: string | null
+          id: string
+          is_resolved: boolean | null
+          timestamp_seconds: number | null
+          updated_at: string | null
+          user_id: string
+          version_id: string
+        }
+        Insert: {
+          comment_text: string
+          created_at?: string | null
+          id?: string
+          is_resolved?: boolean | null
+          timestamp_seconds?: number | null
+          updated_at?: string | null
+          user_id: string
+          version_id: string
+        }
+        Update: {
+          comment_text?: string
+          created_at?: string | null
+          id?: string
+          is_resolved?: boolean | null
+          timestamp_seconds?: number | null
+          updated_at?: string | null
+          user_id?: string
+          version_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "video_feedback_version_id_fkey"
+            columns: ["version_id"]
+            isOneToOne: false
+            referencedRelation: "video_versions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       video_versions: {
         Row: {
-          approval_status: Database["public"]["Enums"]["approval_status"] | null
+          approval_status: string | null
           correction_notes: string | null
           created_at: string
           final_link_requested: boolean | null
@@ -429,9 +470,7 @@ export type Database = {
           version_number: number
         }
         Insert: {
-          approval_status?:
-            | Database["public"]["Enums"]["approval_status"]
-            | null
+          approval_status?: string | null
           correction_notes?: string | null
           created_at?: string
           final_link_requested?: boolean | null
@@ -445,9 +484,7 @@ export type Database = {
           version_number: number
         }
         Update: {
-          approval_status?:
-            | Database["public"]["Enums"]["approval_status"]
-            | null
+          approval_status?: string | null
           correction_notes?: string | null
           created_at?: string
           final_link_requested?: boolean | null
@@ -489,11 +526,6 @@ export type Database = {
     }
     Enums: {
       app_role: "editor" | "client" | "agency"
-      approval_status:
-        | "pending"
-        | "approved"
-        | "rejected"
-        | "corrections_needed"
       employment_type: "fulltime" | "freelance"
       payment_status: "pending" | "paid" | "overdue"
       payment_type: "freelance" | "fulltime"
@@ -628,12 +660,6 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["editor", "client", "agency"],
-      approval_status: [
-        "pending",
-        "approved",
-        "rejected",
-        "corrections_needed",
-      ],
       employment_type: ["fulltime", "freelance"],
       payment_status: ["pending", "paid", "overdue"],
       payment_type: ["freelance", "fulltime"],

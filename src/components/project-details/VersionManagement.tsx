@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -7,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
-import { Plus, Edit, Trash2, CheckCircle, XCircle, AlertCircle, Eye, Link as LinkIcon } from "lucide-react";
+import { Plus, Edit, Trash2, CheckCircle, XCircle, AlertCircle, Eye, Link as LinkIcon, Play } from "lucide-react";
 import { toast } from "sonner";
 import { db } from "@/lib/database-config";
 import { supabase } from "@/integrations/supabase/client";
@@ -20,6 +21,7 @@ interface VersionManagementProps {
 }
 
 export const VersionManagement = ({ projectId, versions, onVersionsUpdate, userRole }: VersionManagementProps) => {
+  const navigate = useNavigate();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingVersion, setEditingVersion] = useState<any>(null);
   const [formData, setFormData] = useState({
@@ -315,14 +317,24 @@ export const VersionManagement = ({ projectId, versions, onVersionsUpdate, userR
                     <TableCell>{new Date(version.created_at).toLocaleDateString()}</TableCell>
                     <TableCell>
                       {version.preview_url ? (
-                        <a 
-                          href={version.preview_url} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="text-primary hover:underline"
-                        >
-                          View Preview
-                        </a>
+                        <div className="flex gap-2">
+                          <Button
+                            size="sm"
+                            variant="default"
+                            onClick={() => navigate(`/video-preview/${version.id}`)}
+                          >
+                            <Play className="w-3 h-3 mr-1" />
+                            Watch & Review
+                          </Button>
+                          <a 
+                            href={version.preview_url} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="text-primary hover:underline text-xs flex items-center"
+                          >
+                            Open Direct Link
+                          </a>
+                        </div>
                       ) : (
                         <span className="text-muted-foreground">Not added</span>
                       )}
