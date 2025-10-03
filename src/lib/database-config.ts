@@ -3,7 +3,15 @@
  * Provides a unified interface for database operations
  */
 
-import { supabase } from "@/integrations/supabase/client";
+// Lazy import to avoid initialization issues
+let supabaseClient: any = null;
+const getSupabase = async () => {
+  if (!supabaseClient) {
+    const { supabase } = await import("@/integrations/supabase/client");
+    supabaseClient = supabase;
+  }
+  return supabaseClient;
+};
 
 export type DatabaseProvider = 'supabase' | 'firebase' | 'mysql' | 'postgresql' | 'mongodb' | 'sqlite';
 
@@ -33,6 +41,7 @@ interface DatabaseAdapter {
 
 class SupabaseAdapter implements DatabaseAdapter {
   async query(query: UniversalQuery): Promise<any> {
+    const supabase = await getSupabase();
     const { collection, operation, data, where, orderBy, limit, select } = query;
     
     switch (operation) {
@@ -60,7 +69,8 @@ class SupabaseAdapter implements DatabaseAdapter {
         return selectData;
       
       case 'insert':
-        const { data: insertData, error: insertError } = await (supabase as any)
+        const supabase1 = await getSupabase();
+        const { data: insertData, error: insertError } = await (supabase1 as any)
           .from(collection)
           .insert(data)
           .select();
@@ -70,7 +80,8 @@ class SupabaseAdapter implements DatabaseAdapter {
       case 'update':
         if (!where) throw new Error('Update requires where clause');
         
-        let updateQuery = (supabase as any).from(collection).update(data);
+        const supabase2 = await getSupabase();
+        let updateQuery = (supabase2 as any).from(collection).update(data);
         Object.entries(where).forEach(([key, value]) => {
           updateQuery = updateQuery.eq(key, value);
         });
@@ -82,7 +93,8 @@ class SupabaseAdapter implements DatabaseAdapter {
       case 'delete':
         if (!where) throw new Error('Delete requires where clause');
         
-        let deleteQuery = (supabase as any).from(collection).delete();
+        const supabase3 = await getSupabase();
+        let deleteQuery = (supabase3 as any).from(collection).delete();
         Object.entries(where).forEach(([key, value]) => {
           deleteQuery = deleteQuery.eq(key, value);
         });
@@ -92,7 +104,8 @@ class SupabaseAdapter implements DatabaseAdapter {
         return null;
       
       case 'count':
-        const { count, error: countError } = await (supabase as any)
+        const supabase4 = await getSupabase();
+        const { count, error: countError } = await (supabase4 as any)
           .from(collection)
           .select('*', { count: 'exact', head: true });
         if (countError) throw countError;

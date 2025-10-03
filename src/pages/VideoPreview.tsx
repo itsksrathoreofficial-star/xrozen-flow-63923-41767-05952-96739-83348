@@ -87,6 +87,8 @@ const VideoPreview = () => {
   };
 
   const subscribeToFeedback = () => {
+    if (!versionId) return;
+    
     const channel = supabase
       .channel('video_feedback_changes')
       .on(
